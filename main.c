@@ -31,7 +31,6 @@ void low(char * temp) //function for making a string from uppercase to lowercase
     {
         *s = tolower((unsigned char) *s);
         s++;
-
     }
 }
 
