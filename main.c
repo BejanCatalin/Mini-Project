@@ -5,13 +5,13 @@
 typedef struct GPU
 {
     char brand[21];
-    char chipset[10];
+    char chipset[21];
     char model[50];
-    char cooling[10];
+    char cooling[21];
     int price;
     int stock;
 };
-void up(char * temp)
+void up(char * temp) //function for making a string from lowercase to uppercase
 {
     char * name;
     name = strtok(temp,":");
@@ -22,7 +22,7 @@ void up(char * temp)
         s++;
     }
 }
-void low(char * temp)
+void low(char * temp) //function for making a string from uppercase to lowercase
 {
     char * name;
     name = strtok(temp,":");
@@ -50,14 +50,21 @@ int addGPU(struct GPU* choice)
     FILE* fp;
     fp = fopen("GPUfile.c","r");
     printf("Input the brand, chipset, model, cooling, price, stock:\n");
+    scanf("%c", &c); //clearing buffer for taking input
     scanf("%s", &choice->brand);
     up(&choice->brand);
+    scanf("%c", &c);
     scanf("%s", &choice->chipset);
     up(&choice->chipset);
+    scanf("%c", &c);
     scanf("%s", &choice->model);
     up(&choice->model);
+    scanf("%c", &c);
     scanf("%s", &choice->cooling);
+    low(&choice->cooling);
+    scanf("%c", &c);
     scanf("%d", &choice->price);
+    scanf("%c", &c);
     scanf("%d", &choice->stock);
     fclose(fp);
     return choice;
@@ -69,10 +76,10 @@ void deleteLine(FILE *fp, FILE *tempFile, char br[21], char chi[21], char mode[5
     fp = fopen("GPUfile.c", "r");
     tempFile = fopen("delete_line_tmp", "w");
 
-    while ((fgets(line, 200, fp)) != NULL)
+    while ((fgets(line, 200, fp)) != NULL) //reading the file line by line
     {
-        if ((strstr(line,br) == NULL) && (strstr(line,chi) == NULL) && (strstr(line,mode) == NULL))
-            fputs(line, tempFile);
+        if ((strstr(line,br) == NULL) && (strstr(line,chi) == NULL) && (strstr(line,mode) == NULL)) //if the user choices are not found
+            fputs(line, tempFile);                                                                  //on the line we put it in the temporary file
     }
     fclose(fp);
     fclose(tempFile);
@@ -102,7 +109,7 @@ int main()
         c = fgetc(fp);
         while (c != EOF)
         {
-            printf ("%c", c);
+            printf ("%c", c); //printing all the file content
             c = fgetc(fp);
         }
         fseek(fp, 0, SEEK_SET);
@@ -117,7 +124,7 @@ int main()
         char* line = malloc(line_size);
         while (fgets(line, line_size, fp) != NULL)
         {
-            if(strstr(line, brandname) != NULL )
+            if(strstr(line, brandname) != NULL )   //printing the lines by the brandname desired by the user
                 printf(line);
         }
         free(line);
@@ -131,7 +138,7 @@ int main()
         up(chiptype);
         const size_t line_size = 100;
         char* line = malloc(line_size);
-        while (fgets(line, line_size, fp) != NULL)
+        while (fgets(line, line_size, fp) != NULL)  //printing the lines by the chipset desired by the user
         {
             if(strstr(line, chiptype) != NULL )
                 printf(line);
@@ -147,7 +154,7 @@ int main()
         up(gpumodel);
         const size_t line_size = 100;
         char* line = malloc(line_size);
-        while (fgets(line, line_size, fp) != NULL)
+        while (fgets(line, line_size, fp) != NULL)  //printing the lines by the model desired by the user
         {
             if(strstr(line, gpumodel) != NULL )
                 printf(line);
@@ -162,7 +169,7 @@ int main()
     {
         struct GPU input;
         addGPU(&input);
-        addToFile(fp, &input);
+        addToFile(fp, &input); //adding a new gpu in the file
         printf("\n");
     }
     else if(value == 6)
@@ -175,19 +182,12 @@ int main()
         scanf("%s", &chi);
         up(chi);
 
-        printf("Input the model of he gpu you want to delete:\n");
+        printf("Input the model of the gpu you want to delete:\n");
         scanf("%s", &mode);
         up(mode);
 
-        //fp = fopen("GPUfile.c", "r");
-        //tempFile = fopen("delete_line_tmp", "w");
-
-        //rewind(fp);
         fseek(fp, 0, SEEK_SET);
-        deleteLine(fp, tempFile, br, chi, mode);
-
-        // fclose(fp);
-        //fclose(tempFile);
+        deleteLine(fp, tempFile, br, chi, mode); //deleting a gpu from the file
 
         remove("GPUfile.c");
         rename("delete_line_tmp", "GPUfile.c");
@@ -196,6 +196,7 @@ int main()
     }
     else
         printf("Wrong choice, please try again.\n");
+
 
     return 0;
 }
